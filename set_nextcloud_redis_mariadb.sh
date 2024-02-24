@@ -63,10 +63,11 @@ services:
 EOF
 
 docker compose up -d
+cd ..
 
 # Open firewall
 sudo ufw allow $1
 
-./tools/making_motd.sh nextcloud \
+bash ./tools/making_motd.sh nextcloud \
   "trusted domain - http://${MYIP}:$1" \
   "처음 http://${MYIP}:$1 에 접속하여 관리자를 생성한다."

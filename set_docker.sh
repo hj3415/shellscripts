@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # 도커, portainer 설치 및 설정
-# $1 - 도커 사용자, $2 - portainer 접속 포트(default:9443)
+
+USER="hj3415"
+PORTAINER_PORT="9443"
 
 MYIP=`hostname -I | cut -d ' ' -f1`
 echo "***********************************************************************"
@@ -29,27 +31,55 @@ if [[ ${answer} == 'n' ]];then
 exit 0
 fi
 
-echo "<<<<<<<<<<<<<<<<<<<< Add $1 to docker group >>>>>>>>>>>>>>>>>>>>>"
-sudo usermod -aG docker $1
-echo "$1's groups - `groups`"
+echo "<<<<<<<<<<<<<<<<<<<< Add ${USER} to docker group >>>>>>>>>>>>>>>>>>>>>"
+sudo usermod -aG docker ${USER}
+echo "${USER}'s groups - `groups`"
 
 # 새로 로그인하기 전까지는 그룹에 추가된것이 반영되지 않는다.
 # sudo docker info
 
 echo "<<<<<<<<<<<<<<<<<<<< Install Portainer >>>>>>>>>>>>>>>>>>>>>"
-# https://docs.portainer.io/start/install/server/docker/linux
-sudo docker volume create portainer_data
-sudo docker run -d -p 8000:8000 -p ${2:="9443"}:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
-# sudo docker ps
+docker compose version
+
+rm -rf setup_portainer
+
+mkdir setup_portainer; cd $_
+tee docker-compose.yml<<EOF
+version: '3'
+
+services:
+  portainer:
+    image: portainer/portainer-ce:alpine
+    container_name: portainer
+    restart: always
+    ports:
+      - ${PORTAINER_PORT}:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${HOME}/portainer_data:/data
+
+
+volumes:
+  portainer_data:
+EOF
+
+# 이전에 존재하는 콘테이너 삭제
+docker stop portainer
+docker rm portainer
+sudo rm -rf ${HOME}/portainer_data
+
+docker compose up -d
+cd ..
 
 echo "<<<<<<<<<<<<<<<<<<<< Open firewall - Portainer port >>>>>>>>>>>>>>>>>>>>>>"
 sudo ufw allow 8000
-sudo ufw allow $2
+sudo ufw allow ${PORTAINER_PORT}
 
 # /etc/motd에 설명 추가
-./tools/making_motd docker \
+bash ./tools/making_motd.sh docker \
   "Docker installed." \
-  "$1 added in docker group." \
+  "${USER} added in docker group." \
   "So you don't neet to type 'sudo' for run docker from now on." \
   "" \
-  "For connecting Portainer - https://${MYIP}:$2"
+  "For connecting Portainer - http://${MYIP}:${PORTAINER_PORT}" \
+  "You can set web id : admin pass : 123456qwerty"
