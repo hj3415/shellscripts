@@ -1,13 +1,15 @@
 #!/bin/bash
 
 # transmission 설치 및 설정
-# $1 - transmission 접속아이디(default:hj3415)
-# $2 - transmission 접속비밀번호(default:piyrw421)
-# $3 - transmission 접속포트(default:9091)
 
 echo "***********************************************************************"
 echo "*                      Install Transmission                          *"
 echo "***********************************************************************"
+
+ID="hj3415"
+PASS="piyrw421"
+PORT="9091"
+MYIP=`hostname -I | cut -d ' ' -f1`
 
 UID=`id -u`
 GID=`id -g`
@@ -19,11 +21,17 @@ sudo apt install -y docker-compose-plugin
 docker compose version
 
 # 필요한 기본 디렉토리 생성
+echo ">>> Do you want to reset transmission directory?(!!contents could be deleted!!) (y/N)"
+read answer
+if [[ ${answer} == 'y' ]];then
+sudo rm -rf transmission/{config,downloads,watch}
+fi
 mkdir -p transmission/{config,downloads,watch}
+
+rm -rf setup_transmission
 mkdir setup_transmission; cd $_
 
 tee docker-compose.yml<<EOF
-version: "2.1"
 services:
   transmission:
     image: lscr.io/linuxserver/transmission:latest
@@ -31,27 +39,32 @@ services:
     environment:
       - PUID=${UID}
       - PGID=${GID}
-      - TZ=Asiz/Seoul
-      - TRANSMISSION_WEB_HOME=/combustion-release/
-      - USER=${1:-hj3415}
-      - PASS=${2:-piyrw421}
+      - TZ=Asia/Seoul
+      - USER=${ID}
+      - PASS=${PASS}
     volumes:
       - ${HOME}/transmission/config:/config
       - ${HOME}/transmission/downloads:/downloads
       - ${HOME}/transmission/watch:/watch
     ports:
-      - ${3:-9091}:9091
+      - ${PORT}:9091
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped
 EOF
 
+# 이미지 최신버전으로 교체
+docker stop transmission
+docker pull lscr.io/linuxserver/transmission:latest
+
 docker compose up -d
+cd ..
 
 # Open firewall
 sudo ufw allow ${PORT}
 sudo ufw allow 51413
 
-./tools/making_motd.sh transmission \
+bash ./tools/making_motd.sh transmission \
   "transmission path - ${HOME}/transmission" \
-  "port - ${PORT}"
+  "For connecting Transmission - http://${MYIP}:${PORT}" \
+  "Web id : ${ID} pass : ${PASS}"
