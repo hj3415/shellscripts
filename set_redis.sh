@@ -2,21 +2,19 @@
 
 # redis 설치 및 설정
 
-echo "***********************************************************************"
-echo "*                      Install Redis                          *"
-echo "***********************************************************************"
-
 UID=`id -u`
 GID=`id -g`
 PORT="6379"
+
+echo "***********************************************************************"
+echo "*                      Install Redis                          *"
+echo "***********************************************************************"
 
 # install docker compose
 sudo apt update
 sudo apt install -y docker-compose-plugin redis-tools
 
 docker compose version
-
-docker pull redis
 
 # 필요한 기본 디렉토리 생성
 echo ">>> Do you want to reset redis directory?(!!contents could be deleted!!) (Y/n)"
@@ -51,8 +49,12 @@ services:
     command: redis-server /usr/local/conf/redis.conf
 EOF
 
-# 이미지 최신버전으로 교체
+# 이전 이미지 삭제
 docker stop redis
+
+docker rm redis
+
+# 이미지 다시 생성
 docker pull redis:latest
 
 docker compose up -d

@@ -2,14 +2,17 @@
 
 # docker compose로 nextcloud-redis-mariadb 설치
 
-echo "***********************************************************************"
-echo "*                     Install nextcloud                               *"
-echo "***********************************************************************"
-
 # mariadb & redis 유저명과 비밀번호
 # nextcloud 유저명과 비밀번호는 웹에 접속해서 설정한다.
 MYIP=`hostname -I | cut -d ' ' -f1`
 PORT="8080"
+
+echo "***********************************************************************"
+echo "*                     Install nextcloud                               *"
+echo "***********************************************************************"
+
+echo ">>> Do you want to add trusted host address? (default:${MYIP})"
+read TRUSTED_DOMAIN
 
 # install docker compose
 sudo apt update
@@ -39,6 +42,7 @@ services:
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - MYSQL_PASSWORD=nextcloud
+      - NEXTCLOUD_TRUSTED_DOMAINS=${TRUSTED_DOMAIN}
   redis:
     image: redis:alpine
     container_name: redis
@@ -71,12 +75,26 @@ networks:
   redisnet:
 EOF
 
-# 이미지 최신버전으로 교체
+# 이전 이미지 삭제
 docker stop nextcloud
-docker pull nextcloud:apache
 docker stop redis
-docker pull redis:alpine
 docker stop mariadb
+
+docker rm nextcloud
+docker rm redis
+docker rm mariadb
+
+# 이전에 존재한 설정파일들을 삭제하기 위해 볼륨을 삭제한다.(trusted domain 재설정)
+echo ">>> Do you want to reset config and db?(!!contents could be deleted!!) (y/N)"
+read answer
+if [[ ${answer} == 'y' ]];then
+docker volume rm setup_nextcloud-redis-mariadb_nc_data
+docker volume rm setup_nextcloud-redis-mariadb_db_data
+fi
+
+# 이미지 다시 생성
+docker pull nextcloud:apache
+docker pull redis:alpine
 docker pull mariadb:10.5
 
 docker compose up -d
@@ -86,5 +104,5 @@ cd ..
 sudo ufw allow ${PORT}
 
 bash ./tools/making_motd.sh nextcloud \
-  "trusted domain - http://${MYIP}:${PORT}" \
-  "처음 http://${MYIP}:${PORT} 에 접속하여 관리자를 생성한다."
+  "trusted domain - ${TRUSTED_DOMAIN}" \
+  "처음 http://${TRUSTED_DOMAIN}:<<port>>에 접속하여 관리자를 생성한다."

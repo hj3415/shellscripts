@@ -2,14 +2,14 @@
 
 # jellyfin 설치 및 설정
 
-echo "***********************************************************************"
-echo "*                      Install Jellyfin                          *"
-echo "***********************************************************************"
-
 UID=`id -u`
 GID=`id -g`
 PORT="8096"
 MYIP=`hostname -I | cut -d ' ' -f1`
+
+echo "***********************************************************************"
+echo "*                      Install Jellyfin                          *"
+echo "***********************************************************************"
 
 # install docker compose
 sudo apt update
@@ -49,8 +49,12 @@ services:
     restart: unless-stopped
 EOF
 
-# 이미지 최신버전으로 교체
+# 이전 이미지 삭제
 docker stop jellyfin
+
+docker rm jellyfin
+
+# 이미지 다시 생성
 docker pull lscr.io/linuxserver/jellyfin:latest
 
 docker compose up -d

@@ -4,8 +4,8 @@
 
 USER="hj3415"
 PORTAINER_PORT="9443"
-
 MYIP=`hostname -I | cut -d ' ' -f1`
+
 echo "***********************************************************************"
 echo "*                        Install docker                               *"
 echo "***********************************************************************"
@@ -42,8 +42,8 @@ echo "<<<<<<<<<<<<<<<<<<<< Install Portainer >>>>>>>>>>>>>>>>>>>>>"
 docker compose version
 
 rm -rf setup_portainer
-
 mkdir setup_portainer; cd $_
+
 tee docker-compose.yml<<EOF
 version: '3'
 
@@ -63,10 +63,19 @@ volumes:
   portainer_data:
 EOF
 
-# 이미지 최신버전으로 교체
+# 이전 이미지 삭제
 docker stop portainer
+docker rm portainer
+
+# 이전에 존재한 설정파일들을 삭제하기 위해 볼륨을 삭제한다.(trusted domain 재설정)
+echo ">>> Do you want to reset config ?(!!contents could be deleted!!) (y/N)"
+read answer
+if [[ ${answer} == 'y' ]];then
+sudo rm -rf ${HOME}/portainer_data
+fi
+
+# 이미지 다시 생성
 docker pull portainer/portainer-ce:alpine
-# sudo rm -rf ${HOME}/portainer_data
 
 docker compose up -d
 cd ..

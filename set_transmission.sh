@@ -2,10 +2,6 @@
 
 # transmission 설치 및 설정
 
-echo "***********************************************************************"
-echo "*                      Install Transmission                          *"
-echo "***********************************************************************"
-
 ID="hj3415"
 PASS="piyrw421"
 PORT="9091"
@@ -13,6 +9,10 @@ MYIP=`hostname -I | cut -d ' ' -f1`
 
 UID=`id -u`
 GID=`id -g`
+
+echo "***********************************************************************"
+echo "*                      Install Transmission                          *"
+echo "***********************************************************************"
 
 # install docker compose
 sudo apt update
@@ -53,8 +53,12 @@ services:
     restart: unless-stopped
 EOF
 
-# 이미지 최신버전으로 교체
+# 이전 이미지 삭제
 docker stop transmission
+
+docker rm transmission
+
+# 이미지 다시 생성
 docker pull lscr.io/linuxserver/transmission:latest
 
 docker compose up -d
