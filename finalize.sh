@@ -1,5 +1,7 @@
 #!/bin/bash
 
+MYIP=`hostname -I | cut -d ' ' -f1`
+
 sudo apt -y autoremove
 
 echo "***********************************************************************"
@@ -46,12 +48,21 @@ sudo sed -i 's/^APT_AUTOGEN="false"/APT_AUTOGEN="true"/g' /etc/default/rkhunter
 
 sudo rkhunter --update
 
+echo "<<<<<<<<<<<<<<<<<<<< Install Cockpit >>>>>>>>>>>>>>>>>>>>>>"
+sudo apt-get install cockpit -y
+sudo apt-get install cockpit-podman -y
+sudo systemctl start cockpit
+sudo systemctl enable cockpit
+sudo ufw allow 9090
+sudo ufw allow 80
+
 echo "<<<<<<<<<<<<<<<<<<<< Enable firewall >>>>>>>>>>>>>>>>>>>>>>"
 sudo ufw enable
 sudo ufw status
 
 # /etc/motd에 설명 추가
 bash ./tools/making_motd.sh finalize \
+  "connect to cockpit - https://${MYIP}:9090" \
   "fail2ban log - /var/log/fail2ban.log" \
   "로그인 인증 실패시 $((${BANTIME} / 3600))시간 동안 차단" \
   "$((${FINDTIME} / 60))분 동안 ${MAXTRY} 회 로그인 실패시 차단" \

@@ -15,7 +15,7 @@ sudo cp /etc/samba/smb.conf /etc/samba/smb.conf_backup
 sudo bash -c 'grep -v -E "^#|^;" /etc/samba/smb.conf_backup | grep . > /etc/samba/smb.conf'
 
 # make a public share
-sudo mkdir ${SMBPATH}
+sudo mkdir -pv ${SMBPATH}
 sudo chmod 777 ${SMBPATH}
 sudo tee -a /etc/samba/smb.conf<<EOF
 [public]
