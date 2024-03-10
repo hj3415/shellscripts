@@ -5,7 +5,7 @@ MYIP=`hostname -I | cut -d ' ' -f1`
 sudo apt -y autoremove
 
 echo "***********************************************************************"
-echo "*                        Install fail2ban & rkhunter                               *"
+echo "*                   Install fail2ban & rkhunter                       *"
 echo "***********************************************************************"
 
 echo "<<<<< Setting up fail2ban >>>>"
@@ -59,6 +59,10 @@ sudo ufw allow 80
 echo "<<<<<<<<<<<<<<<<<<<< Enable firewall >>>>>>>>>>>>>>>>>>>>>>"
 sudo ufw enable
 sudo ufw status
+
+# 에러나는 postfix 서비스 중단
+sudo systemctl stop postfix
+sudo systemctl disable postfix
 
 # /etc/motd에 설명 추가
 bash ./tools/making_motd.sh finalize \
