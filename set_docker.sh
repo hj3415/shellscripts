@@ -78,8 +78,9 @@ fi
 # 이미지 다시 생성
 docker pull portainer/portainer-ce:alpine
 
+cd ${HOME}/setup_portainer
 docker compose up -d
-cd ..
+cd ${HOME}
 
 echo "<<<<<<<<<<<<<<<<<<<< Open firewall - Portainer port >>>>>>>>>>>>>>>>>>>>>>"
 sudo ufw allow 8000

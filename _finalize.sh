@@ -65,7 +65,7 @@ sudo systemctl stop postfix
 sudo systemctl disable postfix
 
 # /etc/motd에 설명 추가
-bash ./tools/making_motd.sh finalize \
+bash ${HOME}/tools/making_motd.sh finalize \
   "connect to cockpit - https://${MYIP}:9090" \
   "fail2ban log - /var/log/fail2ban.log" \
   "로그인 인증 실패시 $((${BANTIME} / 3600))시간 동안 차단" \

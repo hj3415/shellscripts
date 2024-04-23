@@ -3,22 +3,54 @@
 # docker compose로 django nginx gunicorn 설치
 
 MYIP=`hostname -I | cut -d ' ' -f1`
-MYDOMAIN="hj3415.iptime.org"
-PORT="8687"
-PROJECT_NAME="gsden"
 
-echo ">>> The prerequisite is the making of python environment. Did you do that?(y/N)"
+echo ">>> The prerequisite is the making of python virtual environment. Did you do that?(y/N)"
 read answer
-if [[ ${answer} == 'n' ]];then
+if [[ ${answer} != 'y' ]];then
 exit 0
 fi
-pip install django gunicorn
-mkdir docker_django_nginx
-cd ./docker_django_nginx
 
+echo ">>> Input your domain(default: hj3415.iptime.org) : "
+read domain
+if [[ ${domain} == '' ]];then
+MYDOMAIN='hj3415.iptime.org'
+else
+MYDOMAIN=domain
+fi
+
+echo ">>> Input your django project name(default: gsden) : "
+read project_name
+if [[ ${project_name} == '' ]];then
+PROJECT_NAME='gsden'
+else
+PROJECT_NAME=project_name
+fi
+
+echo ">>> Input your http port(default: 80) : "
+read port
+if [[ ${port} == '' ]];then
+PORT='80'
+else
+PORT=port
+fi
+
+echo ">>> Domain : ${MYDOMAIN} / Project : ${PROJECT_NAME} / Port : ${PORT}. Is it right?(y/N)"
+read answer
+if [[ ${answer} == '' || ${answer} == 'n' ]];then
+exit 0
+fi
+
+pip install django gunicorn
+
+rm -rf ${HOME}/myapp
+mkdir ${HOME}/myapp
+cd ${HOME}/myapp
+
+# https://adiramadhan17.medium.com/django-gunicorn-with-nginx-in-docker-21d32488ab98
 echo "***********************************************************************"
 echo "*                     Making django skeleton                            *"
 echo "***********************************************************************"
+
 django-admin startproject ${PROJECT_NAME}
 cd ${PROJECT_NAME}
 python manage.py migrate
@@ -54,17 +86,14 @@ RUN python manage.py migrate
 RUN python manage.py collectstatic --noinput --clear
 EOF
 
-cd ..
-# 빈 장고 프로젝트 생성 완료 및 도커 생성 파일 작성 완료
 
 echo "***********************************************************************"
 echo "*                     Making nginx docker                            *"
 echo "***********************************************************************"
 
-mkdir nginx
-cd nginx
+mkdir ${HOME}/myapp/setup_nginx
 
-tee nginx.conf<<EOF
+tee ${HOME}/myapp/setup_nginx/nginx.conf<<EOF
 client_max_body_size 8M;
 
 upstream django_app {
@@ -96,7 +125,7 @@ server {
 }
 EOF
 
-tee Dockerfile<<EOF
+tee ${HOME}/myapp/setup_nginx/Dockerfile<<EOF
 # Fetching the latest nginx image
 FROM nginx
 
@@ -107,21 +136,19 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d
 EOF
 
-cd ..
-# nginx 프로시 설정 완료 및 도커 생성 파일 작성 완료
 
 echo "***********************************************************************"
 echo "*                     Making docker-compose.yml                        *"
 echo "***********************************************************************"
 
-tee docker-compose.yml<<EOF
+tee ${HOME}/myapp/docker-compose.yml<<EOF
 version: '1.0'
 
 # Defining the compose version
 services:
 
  nginx:
-  build: ./nginx
+  build: ./setup_nginx
   container_name: nginx
   ports:
     - ${PORT}:80
@@ -147,6 +174,17 @@ volumes:
  static_volume:
  media_volume:
 EOF
+
+cd ${HOME}/myapp
+docker-compose down && docker-compose build && docker-compose up -d
+
+
+
+
+
+
+
+:<<'END'
 
 echo "***********************************************************************"
 echo "*               Modifying default settings in django                  *"
@@ -212,3 +250,5 @@ sudo ufw allow ${PORT}
 # 이후 작업 폴더에서 docker compose up --build 실행
 # ip 8687에서 접속테스트
 # 도커 삭제 docker compose down -rmi all
+
+END
