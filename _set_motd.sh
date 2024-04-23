@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "<<<<<<<<<<<<<<<<<<<< Create shellscript making_motd.sh   >>>>>>>>>>>>>>>>>>>>>"
-rm -rf ${HOME}/tools/making_motd.sh
+rm -rf ${HOME}/tools
 mkdir ${HOME}/tools
 tee ${HOME}/tools/making_motd.sh<<EOF
 #!/bin/bash
