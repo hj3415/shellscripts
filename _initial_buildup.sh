@@ -33,6 +33,7 @@ sudo chown -v root:crontab /var/spool/cron/crontabs/root
 sudo chmod -v 600 /var/spool/cron/crontabs/root
 
 echo "<<<<<<<<<<<<<<<<<<<< Open firewall - ssh port >>>>>>>>>>>>>>>>>>>>>>"
+sudo ufw enable
 sudo ufw allow openssh
 
 echo "<<<<<<<<<<<<<<<<<<<< Correct Reboot Freezing >>>>>>>>>>>>>>>>>>>>>"

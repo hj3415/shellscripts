@@ -42,10 +42,10 @@ echo "${USER}'s groups - `groups`"
 echo "<<<<<<<<<<<<<<<<<<<< Install Portainer >>>>>>>>>>>>>>>>>>>>>"
 docker compose version
 
-rm -rf setup_portainer
-mkdir setup_portainer; cd $_
+rm -rf ${HOME}/setup_portainer
+mkdir ${HOME}/setup_portainer
 
-tee docker-compose.yml<<EOF
+tee ${HOME}/setup_portainer/docker-compose.yml<<EOF
 version: '3'
 
 services:
@@ -86,7 +86,7 @@ sudo ufw allow 8000
 sudo ufw allow ${PORTAINER_PORT}
 
 # /etc/motd에 설명 추가
-bash ./tools/making_motd.sh docker \
+bash ${HOME}/tools/making_motd.sh docker \
   "${USER} added in docker group." \
   "So you don't neet to type 'sudo' for run docker from now on." \
   "" \

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 echo "<<<<<<<<<<<<<<<<<<<< Create shellscript making_motd.sh   >>>>>>>>>>>>>>>>>>>>>"
-rm -rf ./tools/making_motd.sh
-mkdir tools
-tee ./tools/making_motd.sh<<EOF
+rm -rf ${HOME}/tools/making_motd.sh
+mkdir ${HOME}/tools
+tee ${HOME}/tools/making_motd.sh<<EOF
 #!/bin/bash
 
 # motd 내용 설정
@@ -36,4 +36,4 @@ MOTD_STR+="<<\$1>>\n"
 sudo echo -e \${MOTD_STR} | sudo tee -a \${motd_pass}
 EOF
 
-chmod +x ./tools/making_motd.sh
+chmod +x ${HOME}/tools/making_motd.sh

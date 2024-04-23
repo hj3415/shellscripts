@@ -28,5 +28,5 @@ EOF
 # https://stackoverflow.com/questions/16011245/source-files-in-a-bash-script
 . ${HOME}/${VENVNAME}/bin/activate
 
-bash ./tools/making_motd.sh python \
+bash ${HOME}/tools/making_motd.sh python \
   "venv - ${HOME}/${VENVNAME}"
