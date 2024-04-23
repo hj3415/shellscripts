@@ -15,7 +15,7 @@ read domain
 if [[ ${domain} == '' ]];then
 MYDOMAIN='hj3415.iptime.org'
 else
-MYDOMAIN=domain
+MYDOMAIN=${domain}
 fi
 
 echo ">>> Input your django project name(default: gsden) : "
@@ -23,7 +23,7 @@ read project_name
 if [[ ${project_name} == '' ]];then
 PROJECT_NAME='gsden'
 else
-PROJECT_NAME=project_name
+PROJECT_NAME=${project_name}
 fi
 
 echo ">>> Input your http port(default: 80) : "
@@ -31,14 +31,15 @@ read port
 if [[ ${port} == '' ]];then
 PORT='80'
 else
-PORT=port
+PORT=${port}
 fi
 
 echo ">>> Domain : ${MYDOMAIN} / Project : ${PROJECT_NAME} / Port : ${PORT}. Is it right?(y/N)"
 read answer
-if [[ ${answer} == '' || ${answer} == 'n' ]];then
+if [[ ${answer} != 'y' ]];then
 exit 0
 fi
+
 
 pip install django gunicorn
 
