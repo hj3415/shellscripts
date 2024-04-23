@@ -143,8 +143,6 @@ echo "*                     Making docker-compose.yml                        *"
 echo "***********************************************************************"
 
 tee ${HOME}/myapp/docker-compose.yml<<EOF
-version: '1.0'
-
 # Defining the compose version
 services:
 
@@ -176,29 +174,16 @@ volumes:
  media_volume:
 EOF
 
-cd ${HOME}/myapp
-docker-compose down && docker-compose build && docker-compose up -d
-
-
-
-
-
-
-
-:<<'END'
-
 echo "***********************************************************************"
 echo "*               Modifying default settings in django                  *"
 echo "***********************************************************************"
 
 # settings.py 수정
-cp ./${PROJECT_NAME}/${PROJECT_NAME}/settings.py.orig ./${PROJECT_NAME}/${PROJECT_NAME}/settings.py
-cp ./${PROJECT_NAME}/${PROJECT_NAME}/settings.py ./${PROJECT_NAME}/${PROJECT_NAME}/settings.py.orig
+cp ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py.orig
+sed -i "s|ALLOWED_HOSTS\s*=\s*\[|&'localhost','${MYIP}','${MYDOMAIN}'|" ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py
+sed -i "s|'DIRS'\s*:\s*\[|&Path(BASE_DIR,'templates')|" ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py
 
-sed -i "s|ALLOWED_HOSTS\s*=\s*\[|&'localhost','${MYIP}','${MYDOMAIN}'|" ./${PROJECT_NAME}/${PROJECT_NAME}/settings.py
-sed -i "s|'DIRS'\s*:\s*\[|&Path(BASE_DIR,'templates')|" ./${PROJECT_NAME}/${PROJECT_NAME}/settings.py
-
-tee -a ./${PROJECT_NAME}/${PROJECT_NAME}/settings.py<<EOF
+tee -a ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py<<EOF
 STATIC_URL = '/static/'
 STATIC_ROOT = Path(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [Path(BASE_DIR,'static'),]
@@ -208,13 +193,13 @@ MEDIA_ROOT = Path(BASE_DIR, 'mediafiles')
 EOF
 
 # 필요한 폴더 생성
-mkdir -pv ./${PROJECT_NAME}/{static,media,templates}
+mkdir -pv ${HOME}/myapp/${PROJECT_NAME}/{static,media,templates}
 
 # static 폴더에 임의의 이미지 저장
-wget -P ./${PROJECT_NAME}/static/ https://picsum.photos/200.jpg
+wget -P ${HOME}/myapp/${PROJECT_NAME}/static/ https://picsum.photos/200.jpg
 
 # 기본 index 페이지 생성
-tee ./${PROJECT_NAME}/templates/index.html<<EOF
+tee ${HOME}/myapp/${PROJECT_NAME}/templates/index.html<<EOF
 {%load static%}
 <!DOCTYPE html>
 <html lang="en">
@@ -232,7 +217,7 @@ tee ./${PROJECT_NAME}/templates/index.html<<EOF
 EOF
 
 # urls.py 생성
-tee ./${PROJECT_NAME}/${PROJECT_NAME}/urls.py<<EOF
+tee ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/urls.py<<EOF
 from django.urls import path
 from django.shortcuts import render
 
@@ -246,6 +231,24 @@ EOF
 
 # Open firewall
 sudo ufw allow ${PORT}
+
+cd ${HOME}/myapp
+docker compose down && docker compose build && docker compose up -d
+
+
+
+
+
+
+
+:<<'END'
+
+
+
+
+
+
+
 
 # 원하는 장고 프로젝트를 프로젝트 폴더에 복사
 # 이후 작업 폴더에서 docker compose up --build 실행
