@@ -208,7 +208,7 @@ EOF
 mkdir -pv ${HOME}/myapp/${PROJECT_NAME}/{_data,_static,media}
 
 # static 폴더에 임의의 이미지 저장
-#wget -P ${HOME}/myapp/${PROJECT_NAME}/static/ https://picsum.photos/200.jpg
+#wget -P ${HOME}/myapp/${PROJECT_NAME}/_static/ https://picsum.photos/200.jpg
 
 # 기본 index 페이지 생성
 #tee ${HOME}/myapp/${PROJECT_NAME}/templates/index.html<<EOF
@@ -229,19 +229,19 @@ mkdir -pv ${HOME}/myapp/${PROJECT_NAME}/{_data,_static,media}
 #EOF
 
 # urls.py 생성
-tee ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/urls.py<<EOF
-from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-
+#tee ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/urls.py<<EOF
+#from django.contrib import admin
+#from django.urls import path, include
+#from django.conf import settings
+#from django.conf.urls.static import static
+#
+#urlpatterns = [
+#    path('admin/', admin.site.urls),
+#
     # 최상위 경로가 맨 아래로 가야한다.
     # path('', include('django_herobiz_dental.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-EOF
+#] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#EOF
 
 cd ${HOME}/myapp
 docker compose down && docker compose build && docker compose up -d
