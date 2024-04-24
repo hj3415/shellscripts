@@ -2,6 +2,10 @@
 
 # docker compose로 django nginx gunicorn 설치
 
+# home - myapp - project_name(django compose 파일) - project_name
+#              - setup_nginx(nginx compose 파일)
+#              - docker-compose.yml
+
 MYIP=`hostname -I | cut -d ' ' -f1`
 
 echo ">>> The prerequisite is the making of python virtual environment. Did you do that?(y/N)"
@@ -178,55 +182,63 @@ echo "***********************************************************************"
 echo "*               Modifying default settings in django                  *"
 echo "***********************************************************************"
 
-# settings.py 수정
+# settings.py 백업
 cp ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py.orig
+# allowed_hosts 에 현재 아이피, 도메인 추가
 sed -i "s|ALLOWED_HOSTS\s*=\s*\[|&'localhost','${MYIP}','${MYDOMAIN}'|" ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py
-sed -i "s|'DIRS'\s*:\s*\[|&Path(BASE_DIR,'templates')|" ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py
+# 프로젝트 바깥에 templates 폴더 사용가능하게 설정
+# sed -i "s|'DIRS'\s*:\s*\[|&Path(BASE_DIR,'templates')|" ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py
 
+# static, media 사용가능하게 하는 설정
 tee -a ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py<<EOF
-STATIC_URL = '/static/'
-STATIC_ROOT = Path(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [Path(BASE_DIR,'static'),]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, '_static/'),
+]
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = Path(BASE_DIR, 'mediafiles')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 EOF
 
 # 필요한 폴더 생성
-mkdir -pv ${HOME}/myapp/${PROJECT_NAME}/{static,media,templates}
+mkdir -pv ${HOME}/myapp/${PROJECT_NAME}/{_data, _static, media}
 
 # static 폴더에 임의의 이미지 저장
-wget -P ${HOME}/myapp/${PROJECT_NAME}/static/ https://picsum.photos/200.jpg
+#wget -P ${HOME}/myapp/${PROJECT_NAME}/static/ https://picsum.photos/200.jpg
 
 # 기본 index 페이지 생성
-tee ${HOME}/myapp/${PROJECT_NAME}/templates/index.html<<EOF
-{%load static%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
-</head>
-<body>
-    <h1>Hello World!</h1>
-    <img src="{%static '200.jpg' %}" alt="not found">
-</body>
-</html>
-EOF
+#tee ${HOME}/myapp/${PROJECT_NAME}/templates/index.html<<EOF
+#{%load static%}
+#<!DOCTYPE html>
+#<html lang="en">
+#<head>
+#    <meta charset="UTF-8">
+#    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+#    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+#    <title>Hello World</title>
+#</head>
+#<body>
+#    <h1>Hello World!</h1>
+#    <img src="{%static '200.jpg' %}" alt="not found">
+#</body>
+#</html>
+#EOF
 
 # urls.py 생성
 tee ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/urls.py<<EOF
-from django.urls import path
-from django.shortcuts import render
-
-def home(request):
-    return render(request, template_name='index.html')
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', home ),
-]
+    path('admin/', admin.site.urls),
+
+    \# 최상위 경로가 맨 아래로 가야한다.
+    \# path('', include('django_herobiz_dental.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 EOF
 
 # Open firewall
@@ -235,24 +247,10 @@ sudo ufw allow ${PORT}
 cd ${HOME}/myapp
 docker compose down && docker compose build && docker compose up -d
 
-
-
-
-
-
-
-:<<'END'
-
-
-
-
-
-
-
-
-# 원하는 장고 프로젝트를 프로젝트 폴더에 복사
-# 이후 작업 폴더에서 docker compose up --build 실행
-# ip 8687에서 접속테스트
-# 도커 삭제 docker compose down -rmi all
-
-END
+# /etc/motd에 설명 추가
+bash ${HOME}/tools/making_motd.sh django_nginx \
+  "Django - Nginx - Gunicorn complex installed" \
+  "Domain : ${MYDOMAIN} / Project : ${PROJECT_NAME} / Port : ${PORT}" \
+  "" \
+  "If web site contents changed, it need to restart docker composer." \
+  "docker compose down && docker compose build && docker compose up -d"
