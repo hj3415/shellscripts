@@ -14,18 +14,18 @@ if [[ ${answer} != 'y' ]];then
 exit 0
 fi
 
-echo ">>> Input your domain(default: hj3415.iptime.org) : "
+echo ">>> Input your domain(default: hyungjin.kr) : "
 read domain
 if [[ ${domain} == '' ]];then
-MYDOMAIN='hj3415.iptime.org'
+MYDOMAIN='hyungjin.kr'
 else
 MYDOMAIN=${domain}
 fi
 
-echo ">>> Input your django project name(default: gsden) : "
+echo ">>> Input your django project name(default: hyungjin) : "
 read project_name
 if [[ ${project_name} == '' ]];then
-PROJECT_NAME='gsden'
+PROJECT_NAME='hyungjin'
 else
 PROJECT_NAME=${project_name}
 fi
@@ -43,7 +43,6 @@ read answer
 if [[ ${answer} != 'y' ]];then
 exit 0
 fi
-
 
 pip install django gunicorn
 
@@ -109,6 +108,7 @@ upstream django_app {
 server {
 
     listen 80;
+    listen [::]:80;
 
     access_log /var/log/nginx/access.log;
     error_log /var/log/nginx/error.log;
@@ -255,4 +255,4 @@ bash ${HOME}/tools/making_motd.sh django_nginx \
   "Domain : ${MYDOMAIN} / Project : ${PROJECT_NAME} / Port : ${PORT}" \
   "" \
   "If web site contents changed, it need to restart docker composer." \
-  "docker compose down && docker compose build && docker compose up -d"
+  "ex - docker compose down && docker compose build && docker compose up -d"
