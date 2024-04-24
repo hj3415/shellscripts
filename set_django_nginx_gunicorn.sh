@@ -60,10 +60,11 @@ django-admin startproject ${PROJECT_NAME}
 cd ${PROJECT_NAME}
 python manage.py migrate
 
-tee requirements.txt<<EOF
-Django
-gunicorn
-EOF
+pip freeze>requirements.txt
+# tee requirements.txt<<EOF
+# Django
+# gunicorn
+# EOF
 
 tee Dockerfile<<EOF
 # syntax=docker/dockerfile:1
@@ -189,7 +190,8 @@ sed -i "s|ALLOWED_HOSTS\s*=\s*\[|&'localhost','${MYIP}','${MYDOMAIN}'|" ${HOME}/
 # 프로젝트 바깥에 templates 폴더 사용가능하게 설정
 # sed -i "s|'DIRS'\s*:\s*\[|&Path(BASE_DIR,'templates')|" ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py
 
-# static, media 사용가능하게 하는 설정
+# static, media 사용 가능하게 하는 설정
+sed -i "1 i\import os" ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py
 tee -a ${HOME}/myapp/${PROJECT_NAME}/${PROJECT_NAME}/settings.py<<EOF
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, '_static/'),
@@ -236,8 +238,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    \# 최상위 경로가 맨 아래로 가야한다.
-    \# path('', include('django_herobiz_dental.urls')),
+    # 최상위 경로가 맨 아래로 가야한다.
+    # path('', include('django_herobiz_dental.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 EOF
 
