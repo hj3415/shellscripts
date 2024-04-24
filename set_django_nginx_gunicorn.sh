@@ -205,7 +205,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 EOF
 
 # 필요한 폴더 생성
-mkdir -pv ${HOME}/myapp/${PROJECT_NAME}/{_data, _static, media}
+mkdir -pv ${HOME}/myapp/${PROJECT_NAME}/{_data,_static,media}
 
 # static 폴더에 임의의 이미지 저장
 #wget -P ${HOME}/myapp/${PROJECT_NAME}/static/ https://picsum.photos/200.jpg
@@ -243,11 +243,11 @@ urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 EOF
 
-# Open firewall
-sudo ufw allow ${PORT}
-
 cd ${HOME}/myapp
 docker compose down && docker compose build && docker compose up -d
+
+echo "<<<<<<<<<<<<<<<<<<<< Open firewall >>>>>>>>>>>>>>>>>>>>>>"
+sudo ufw allow ${PORT}
 
 # /etc/motd에 설명 추가
 bash ${HOME}/tools/making_motd.sh django_nginx \
