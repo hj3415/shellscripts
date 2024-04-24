@@ -72,7 +72,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 EOF
 
 # 필요한 폴더 생성
-mkdir -pv ${HOME}${PROJECT_NAME}/{_data,_static,media}
+mkdir -pv ${HOME}/${PROJECT_NAME}/{_data,_static,media}
 
 
 echo "<<<<<<<<<<<<<<<<<<<<< Setting up the nginx >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
