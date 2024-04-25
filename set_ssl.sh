@@ -1,10 +1,16 @@
 #!/bin/bash
 
 # www 빼고 실제 도메인만
-MYDOMAIN="melange-studio.co.kr"
+MYDOMAIN="hyungjin.kr"
 
 echo "<<<<<<<<<<<<<<<<<<<<< Install ssl with certbot >>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "PLEASE CHECK YOUR DOMAIN AGAIN - ${MYDOMAIN}"
+
+echo ">>> Is it right?(y/N)"
+read answer
+if [[ ${answer} != 'y' ]];then
+exit 0
+fi
 
 # ubutu 20.04 에 nginx설치가 전제
 
