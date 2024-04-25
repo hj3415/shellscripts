@@ -86,7 +86,7 @@ chmod -Rv 755 ${STATIC_ROOT}
 # set media dir
 mkdir -pv ${MEDIA_ROOT}
 chmod -Rv 755 ${MEDIA_ROOT}
-chown -R ${USER}:www-data ${MEDIA_ROOT}
+sudo chown -R ${USER}:www-data ${MEDIA_ROOT}
 
 
 echo "<<<<<<<<<<<<<<<<<<<<< Setting up the gunicorn >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
@@ -169,4 +169,5 @@ bash ${HOME}/tools/making_motd.sh django_nginx \
   "Domain : ${MYDOMAIN} / Project : ${PROJECT_NAME} / Port : ${PORT}" \
   "" \
   "django project dir - ${HOME}/${PROJECT_NAME}" \
-  "nginx conf file - /etc/nginx/sites-enabled/${PROJECT_NAME}"
+  "nginx conf file - /etc/nginx/sites-enabled/${PROJECT_NAME}" \
+  "gunicorn service name - gunicorn_${PROJECT_NAME}"
