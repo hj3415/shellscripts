@@ -20,5 +20,5 @@ sudo apt autoremove -y
 sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
-echo "<<<<<< certbot 설정 방법 - 이메일 입력, ,y ,y , blank 입력 >>>>>>"
+echo "<<<<<< certbot 설정 방법 - 이메일 입력, y ,y 입력 >>>>>>"
 sudo certbot --nginx -d ${MYDOMAIN} -d www.${MYDOMAIN}
