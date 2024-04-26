@@ -48,6 +48,7 @@ STATIC_ROOT=${HOME}/${PROJECT_NAME}/staticfiles
 SOCKET_PATH=${HOME}/${PROJECT_NAME}/gunicorn_socket
 
 echo "<<<<<<<<<<<<<<<<<< Create sample django project >>>>>>>>>>>>>>>>>>>>>>>>"
+rm -rf ${PROJECT_NAME}
 pip3 install django
 cd ${HOME}
 django-admin startproject ${PROJECT_NAME}
