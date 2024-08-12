@@ -18,7 +18,7 @@ NFS_PATH=$(which nfs)
 
 # 월-금 9-15시까지 매 10분단위로 갱신
 # 문자열 글로빙 문제로 작은따옴표와 큰따옴표를 적절히 사용해야 에러가 나지 않는다.
-C101='*/10 9-15 * * 1-5 '"$NFS_PATH"' c101 all'
+C101='*/30 9-15 * * 1-5 '"$NFS_PATH"' c101 all'
 
 # 월-금 14시에 마지막 갱신하고 노티
 C101_FINAL='0 16 * * 1-5 '"$NFS_PATH"' c101 all --noti'
@@ -27,7 +27,7 @@ C101_FINAL='0 16 * * 1-5 '"$NFS_PATH"' c101 all --noti'
 C108='0 18 * * 1-5 '"$NFS_PATH"' c108 all --noti'
 
 # 토 06시에 갱신
-C106='0 6 * * 6 '"$NFS_PATH"' c106 all --noti'
+C106='0 06 * * 6 '"$NFS_PATH"' c106 all --noti'
 
 # 토 11시에 갱신
 C103Y='0 11 * * 6 '"$NFS_PATH"' c103y all --noti'
