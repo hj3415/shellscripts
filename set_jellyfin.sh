@@ -21,14 +21,14 @@ docker compose version
 echo ">>> Do you want to reset jellyfin directory?(!!contents could be deleted!!) (y/N)"
 read answer
 if [[ ${answer} == 'y' ]];then
-sudo rm -rf jellyfin/{library,data}
+sudo rm -rf ${HOME}/jellyfin/{library,data}
 fi
-mkdir -p jellyfin/{library,data}
+mkdir -p ${HOME}/jellyfin/{library,data}
 
-rm -rf setup_jellyfin
-mkdir setup_jellyfin; cd $_
+rm -rf ${HOME}/setup_jellyfin
+mkdir ${HOME}/setup_jellyfin; cd $_
 
-tee docker-compose.yml<<EOF
+tee ${HOME}/setup_jellyfin/docker-compose.yml<<EOF
 version: "2.1"
 services:
   jellyfin:
@@ -67,6 +67,6 @@ sudo ufw allow 8920/tcp
 sudo ufw allow 7359/udp
 sudo ufw allow 1900/udp
 
-bash ./tools/making_motd.sh jellyfin \
+bash ${HOME}/tools/making_motd.sh jellyfin \
   "jellyfin path - ${HOME}/jellyfin" \
   "For connecting jellyfin - http://${MYIP}:${PORT}"

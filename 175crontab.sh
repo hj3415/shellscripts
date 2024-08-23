@@ -52,4 +52,7 @@ chk_job "$C103Q"
 chk_job "$C104Y"
 chk_job "$C104Q"
 
+MIS_PATH=$(which mis)
+MI_FINAL='0 17 * * 1-5 '"$MIS_PATH"' mi --noti'
 
+chk_job "$MI_FINAL"

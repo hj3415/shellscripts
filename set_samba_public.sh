@@ -32,6 +32,6 @@ sudo systemctl restart smbd
 
 sudo ufw allow Samba
 
-bash ./tools/making_motd.sh samba \
+bash ${HOME}/tools/making_motd.sh samba \
   "Public Samba server" \
   "working directory - public : ${SMBPATH}"

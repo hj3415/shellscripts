@@ -68,7 +68,7 @@ cd ..
 sudo ufw allow ${PORT}
 sudo ufw allow 51413
 
-bash ./tools/making_motd.sh transmission \
+bash ${HOME}/tools/making_motd.sh transmission \
   "transmission path - ${HOME}/transmission" \
   "For connecting Transmission - http://${MYIP}:${PORT}" \
   "Web id : ${ID} pass : ${PASS}"

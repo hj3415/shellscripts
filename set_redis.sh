@@ -20,16 +20,14 @@ docker compose version
 echo ">>> Do you want to reset redis directory?(!!contents could be deleted!!) (Y/n)"
 read answer
 if [[ ${answer} == 'y' ]];then
-sudo rm -rf redis/{data,conf}
+sudo rm -rf ${HOME}/redis/{data,conf}
 fi
-mkdir -p redis/{data,conf}
+mkdir -p ${HOME}/redis/{data,conf}
 
-rm -rf setup_redis
-mkdir setup_redis; cd $_
+rm -rf ${HOME}/setup_redis
+mkdir ${HOME}/setup_redis; cd $_
 
-tee docker-compose.yml<<EOF
-version: "3.1"
-
+tee ${HOME}/setup_redis/docker-compose.yml<<EOF
 services:
   redis_container:
     image: redis:latest
@@ -64,6 +62,6 @@ sudo chown -R ${UID}:${GID} ${HOME}/redis/data
 # Open firewall
 sudo ufw allow ${PORT}/tcp
 
-bash ./tools/making_motd.sh redis \
+bash ${HOME}/tools/making_motd.sh redis \
   "redis working directory - ${HOME}/redis/data" \
   "port - ${PORT}"

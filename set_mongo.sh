@@ -2,15 +2,14 @@
 
 # mongodb 설치 및 설정
 
-echo "***********************************************************************"
-echo "*                      Install MongoDB                          *"
-echo "***********************************************************************"
-
 ID="hj3415"
 PASS="piyrw421"
 PORT="27017"
-
 MYIP=`hostname -I | cut -d ' ' -f1`
+
+echo "***********************************************************************"
+echo "*                      Install MongoDB                          *"
+echo "***********************************************************************"
 
 # install docker compose
 sudo apt update
@@ -19,10 +18,10 @@ sudo apt install -y docker-compose-plugin
 docker compose version
 
 # 필요한 기본 디렉토리 생성
-rm -rf setup_mongo
-mkdir setup_mongo; cd $_
+rm -rf ${HOME}/setup_mongo
+mkdir ${HOME}/setup_mongo; cd $_
 
-tee mongod.conf<<EOF
+tee ${HOME}/setup_mongo/mongod.conf<<EOF
 storage:
   dbPath: /data/db
 
@@ -43,7 +42,7 @@ security:
   authorization: enabled
 EOF
 
-tee docker-compose.yml<<EOF
+tee ${HOME}/setup_mongo/docker-compose.yml<<EOF
 # Use root/example as user/password credentials
 services:
   mongo:
@@ -53,7 +52,7 @@ services:
       - "${PORT}:27107"
     volumes:
       - mongo-data:/data/db
-      - ./mongod.conf:/etc/mongod.conf
+      - ${HOME}/setup_mongo/mongod.conf:/etc/mongod.conf
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${ID}
@@ -78,6 +77,6 @@ cd ..
 # Open firewall
 sudo ufw allow ${PORT}
 
-bash ./tools/making_motd.sh mongo \
-  "addr - mongodb://${ID}:${PASS}@${MYIP}:${PORT}/" \
-  "data - ${DATA_PATH}"
+bash ${HOME}/tools/making_motd.sh mongo \
+  "addr - mongodb://${ID}:${PASS}@${MYIP}:${PORT}/"
+  

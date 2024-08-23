@@ -68,7 +68,7 @@ sudo systemctl restart apache2
 sudo systemctl status apache2
 
 echo "<<<<<<<<<<<<<<<<<<<< Append subversion motd >>>>>>>>>>>>>>>>>>>>>>"
-bash ./tools/making_motd.sh transmission \
+bash ${HOME}/tools/making_motd.sh transmission \
   "apache subversion ... not docker" \
   "addr - http://${MYIP}:${PORT}/svn/project" \
   "id - ${ID}, pass - ${PASS}" \

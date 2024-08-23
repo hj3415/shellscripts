@@ -43,11 +43,9 @@ echo "<<<<<<<<<<<<<<<<<<<< Install Portainer >>>>>>>>>>>>>>>>>>>>>"
 docker compose version
 
 rm -rf ${HOME}/setup_portainer
-mkdir ${HOME}/setup_portainer
+mkdir ${HOME}/setup_portainer; cd $_
 
 tee ${HOME}/setup_portainer/docker-compose.yml<<EOF
-version: '3'
-
 services:
   portainer:
     image: portainer/portainer-ce:alpine

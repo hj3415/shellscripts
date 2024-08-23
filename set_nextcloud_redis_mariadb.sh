@@ -4,8 +4,8 @@
 
 # mariadb & redis 유저명과 비밀번호
 # nextcloud 유저명과 비밀번호는 웹에 접속해서 설정한다.
-MYIP=`hostname -I | cut -d ' ' -f1`
 PORT="8080"
+MYIP=`hostname -I | cut -d ' ' -f1`
 
 echo "***********************************************************************"
 echo "*                     Install nextcloud                               *"
@@ -20,10 +20,10 @@ sudo apt-get install -y docker-compose-plugin
 
 docker compose version
 
-rm -rf setup_nextcloud-redis-mariadb
-mkdir setup_nextcloud-redis-mariadb; cd $_
+rm -rf ${HOME}/setup_nextcloud-redis-mariadb
+mkdir ${HOME}/setup_nextcloud-redis-mariadb; cd $_
 
-tee docker-compose.yml<<EOF
+tee ${HOME}/setup_nextcloud-redis-mariadb/docker-compose.yml<<EOF
 services:
   nc:
     image: nextcloud:apache
@@ -103,6 +103,6 @@ cd ..
 # Open firewall
 sudo ufw allow ${PORT}
 
-bash ./tools/making_motd.sh nextcloud \
+bash ${HOME}/tools/making_motd.sh nextcloud \
   "trusted domain - ${TRUSTED_DOMAIN}" \
   "처음 http://${TRUSTED_DOMAIN}:<<port>>에 접속하여 관리자를 생성한다."
