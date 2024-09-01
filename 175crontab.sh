@@ -56,3 +56,11 @@ MIS_PATH=$(which mis)
 MI_FINAL='0 17 * * 1-5 '"$MIS_PATH"' mi --noti'
 
 chk_job "$MI_FINAL"
+
+
+ANALYSER_PATH=$(which analyser)
+RED_RANKING='0 07 * * * '"$ANALYSER_PATH"' ranking --noti'
+MIL_N_SCORE='30 07 * * * '"$ANALYSER_PATH"' mil --noti'
+
+chk_job "$RED_RANKING"
+chk_job "$MIL_N_SCORE"
