@@ -53,14 +53,22 @@ chk_job "$C104Y"
 chk_job "$C104Q"
 
 MIS_PATH=$(which mis)
+
 MI_FINAL='0 17 * * 1-5 '"$MIS_PATH"' mi --noti'
 
 chk_job "$MI_FINAL"
 
 
 ANALYSER_PATH=$(which analyser)
+
 RED_RANKING='0 07 * * * '"$ANALYSER_PATH"' ranking --noti'
 MIL_N_SCORE='30 07 * * * '"$ANALYSER_PATH"' mil --noti'
 
 chk_job "$RED_RANKING"
 chk_job "$MIL_N_SCORE"
+
+DART_PATH=$(which dart)
+
+DART_SAVE='10,40 9-17 * * 1-5 '"$DART_PATH"' save --noti'
+
+chk_job "$DART_SAVE"

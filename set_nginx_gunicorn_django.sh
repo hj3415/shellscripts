@@ -120,8 +120,9 @@ sudo systemctl enable gunicorn_${PROJECT_NAME}.service
 
 echo "<<<<<<<<<<<<<<<<<<<<< Make nginx reverse proxy setting >>>>>>>>>>>>>>>>>>>>>>>>>"
 
-# make socket folder
+# make socket folder and 권한설정
 mkdir ${SOCKET_PATH}
+sudo chmod 755 ${HOME}
 
 # 이전 nginx config파일을 지운다.
 sudo rm -rf /etc/nginx/sites-available/*
