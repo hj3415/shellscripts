@@ -61,8 +61,8 @@ chk_job "$MI_FINAL"
 
 ANALYSER_PATH=$(which analyser)
 
-RED_RANKING='0 07 * * * '"$ANALYSER_PATH"' ranking --noti'
-MIL_N_SCORE='30 07 * * * '"$ANALYSER_PATH"' mil --noti'
+RED_RANKING='0 07 * * * '"$ANALYSER_PATH"' red ranking --noti'
+MIL_N_SCORE='30 07 * * * '"$ANALYSER_PATH"' mil score all --noti'
 
 chk_job "$RED_RANKING"
 chk_job "$MIL_N_SCORE"
