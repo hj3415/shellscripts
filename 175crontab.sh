@@ -58,6 +58,10 @@ MI_FINAL='0 17 * * 1-5 '"$MIS_PATH"' mi --noti'
 
 chk_job "$MI_FINAL"
 
+KRX_PATH=$(which krx)
+KRX_SYNC='0 05 * * * '"$KRX_PATH"' sync --noti'
+
+chk_job "$KRX_SYNC"
 
 ANALYSER_PATH=$(which analyser)
 
@@ -69,6 +73,8 @@ chk_job "$MIL_N_SCORE"
 
 DART_PATH=$(which dart)
 
-DART_SAVE='10,40 9-17 * * 1-5 '"$DART_PATH"' save --noti'
+DART_SAVE='10,40 9-17 * * 1-5 '"$DART_PATH"' save --today --log'
 
 chk_job "$DART_SAVE"
+
+

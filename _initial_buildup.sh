@@ -24,10 +24,10 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
 # m h  dom mon dow   command
 
 # reboot every 3am
-#0 3 * * 0 /sbin/shutdown -r +5
-10 3 * * 0 /usr/sbin/rdate -s time.bora.net
-11 3 * * 0 /usr/bin/apt update
-15 3 * * 0 /usr/bin/apt -y upgrade
+10 2 * * 0 /usr/sbin/rdate -s time.bora.net
+11 2 * * 0 /usr/bin/apt update
+15 2 * * 0 /usr/bin/apt -y upgrade
+0 3 * * 0 /sbin/shutdown -r +5
 EOF
 sudo chown -v root:crontab /var/spool/cron/crontabs/root
 sudo chmod -v 600 /var/spool/cron/crontabs/root
