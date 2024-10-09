@@ -59,7 +59,7 @@ MI_FINAL='0 17 * * 1-5 '"$MIS_PATH"' mi --noti'
 chk_job "$MI_FINAL"
 
 KRX_PATH=$(which krx)
-KRX_SYNC='0 05 * * * '"$KRX_PATH"' sync --noti'
+KRX_SYNC='0 05 * * * '"$KRX_PATH"' sync --period 7 --noti'
 
 chk_job "$KRX_SYNC"
 
@@ -76,5 +76,11 @@ DART_PATH=$(which dart)
 DART_SAVE='10,40 9-17 * * 1-5 '"$DART_PATH"' save --today --log'
 
 chk_job "$DART_SAVE"
+
+DB_PATH=$(which db)
+
+DB_SAVE='30 05 * * * '"$DB_PATH"' repair all --noti'
+
+chk_job "$DB_SAVE"
 
 
